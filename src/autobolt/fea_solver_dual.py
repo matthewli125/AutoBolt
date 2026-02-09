@@ -19,30 +19,6 @@ def import_step_and_capture_new_volumes(step_path: str) -> list[int]:
     new_tags = sorted(after - before)
     return new_tags
 
-def _read_mesh_and_create_xdmf_file(msh_file, xdmf_file_mesh, xdmf_file_surface_tags):
-    # Read the .msh file using meshio
-    msh = meshio.read(msh_file)
-
-    # Utility function to extract specific cell types
-    def create_mesh(mesh, cell_type, prune_z=False):
-        cells = mesh.get_cells_type(cell_type)
-        cell_data = mesh.get_cell_data("gmsh:physical", cell_type)
-        points = mesh.points[:, :2] if prune_z else mesh.points
-        out_mesh = meshio.Mesh(
-            points=points,
-            cells={cell_type: cells},
-            cell_data={"name_to_read": [cell_data]},
-        )
-        return out_mesh
-
-    # Write the volumetric mesh (tetrahedrons) to mesh.xdmf
-    tetra_mesh = create_mesh(msh, "tetra")
-    meshio.write(xdmf_file_mesh, tetra_mesh)
-
-    # Write the surface tags (triangles) to surface_tags.xdmf
-    triangle_mesh = create_mesh(msh, "triangle")
-    meshio.write(xdmf_file_surface_tags, triangle_mesh)
-
 def _run_fenics_simulation(
         xdmf_file_mesh: str, 
         xdmf_file_surface_tags: str, 
