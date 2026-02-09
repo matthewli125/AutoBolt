@@ -1,6 +1,50 @@
 from .fea_solver import _calculate_fos_from_build123d
-from .parametric_cad_solver import create_two_plate_assembly
+from .parametric_cad_solver import create_two_plate_assembly, create_two_plate_assembly_components
 
+from .fea_solver_dual import _calculate_fos_from_build123d_dual
+
+
+def calculate_fos_dual(
+    plate_length_m: float,
+    plate_width_m: float,
+    plate_thickness_m: float,
+    num_holes: int,
+    hole_radius_m: float,
+    edge_margin_m: float,
+    hole_spacing_m: float,
+    hole_offset_from_bottom_m: float,
+    plate_gap_mm: float,
+    elastic_modulus: float,
+    poissons_ratio: float,
+    bolt_yield_strength: float,
+    plate_yield_strength: float,
+    traction_values: list[tuple],
+) -> tuple[float, float]:
+    
+    plateA, plateB, bolt_cylinders = create_two_plate_assembly(
+        plate_length_m,
+        plate_width_m,
+        plate_thickness_m,
+        num_holes,
+        hole_radius_m,
+        edge_margin_m,
+        hole_spacing_m,
+        hole_offset_from_bottom_m,
+        plate_gap_mm,
+    )
+
+    bolt_fos, plate_fos = _calculate_fos_from_build123d_dual(
+        plateA,
+        plateB,
+        bolt_cylinders,
+        elastic_modulus,
+        poissons_ratio,
+        bolt_yield_strength,
+        plate_yield_strength,
+        traction_values,
+    )
+
+    return bolt_fos, plate_fos
 
 def calculate_fos(
     plate_length_m: float,

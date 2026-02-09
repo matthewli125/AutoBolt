@@ -1,2 +1,4 @@
 .idea/
 CAD_2plates.step
+.venv
+__pycache__

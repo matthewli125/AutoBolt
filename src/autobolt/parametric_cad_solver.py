@@ -1,7 +1,7 @@
 ﻿import build123d
 
 
-def create_two_plate_assembly(
+def create_two_plate_assembly_components(
     plate_length_m: float,
     plate_width_m: float,
     plate_thickness_m: float,
@@ -87,5 +87,31 @@ def create_two_plate_assembly(
     bolt_cylinders = bp2.part
 
     # 4) Assemble and return
+    return plateA, plateB, bolt_cylinders
+
+
+def create_two_plate_assembly(
+    plate_length_m: float,
+    plate_width_m: float,
+    plate_thickness_m: float,
+    num_holes: int,
+    hole_radius_m: float,
+    edge_margin_m: float,
+    hole_spacing_m: float,
+    hole_offset_from_bottom_m: float,
+    plate_gap_mm: float,
+):
+    plateA, plateB, bolt_cylinders = create_two_plate_assembly_components(
+        plate_length_m,
+        plate_width_m,
+        plate_thickness_m,
+        num_holes,
+        hole_radius_m,
+        edge_margin_m,
+        hole_spacing_m,
+        hole_offset_from_bottom_m,
+        plate_gap_mm,
+    )
+
     assembly = build123d.Compound(children=[plateA, plateB, bolt_cylinders])
     return assembly
